@@ -19,26 +19,20 @@ class BrokerServlet extends ScalatraServlet with ScalateSupport with JacksonJson
 	before() {
 		contentType = formats("json")
 	}
-	
+
 	get("/") {
-		broker.list()
+		broker.view()
 	}
-
+	
 	post("/:topic") {
-		broker.add(params("topic"), params("event"))
+		broker.write(params("topic"), params("event"))
 	}
-}
 
-case class Transaction(topic:String, event:String)
-
-class Broker {
-	var topics = mutable.Map[String, List[String]]().withDefaultValue(Nil)
-
-	def list() = topics.keys
-
-	def add(topic:String, event:String) : Transaction = {
-		topics(topic) ::= event
-		new Transaction(topic, event);
+	get("/:topic") {
+		// broker.read(params("topic"), params("key")) match {
+		//	case Some(t)	=> Ok(t);
+		//	case None	=> NotFound(params("topic") + " not found");
+		//}
 	}
 }
 
