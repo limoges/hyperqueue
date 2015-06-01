@@ -14,6 +14,7 @@ class Topic(val name:String) {
 	}
 }
 
+case class Client(val id:String)
 class Consumer(val id:String) {
 	var bookmarks = Map[String, Int]()
 
@@ -25,7 +26,8 @@ class Consumer(val id:String) {
 case class Transaction(topic:String, event:String, operation:String)
 class Broker {
 	var topics = mutable.Map[String, Topic]()
-	var subs = mutable.Map[String, Consumer]()
+	var sessions = 0
+	var consumers = mutable.Map[String, Consumer]()
 
 	def view() = topics.keys
 
@@ -36,4 +38,28 @@ class Broker {
 		topics(topic).write(event)
 		new Transaction(topic, event, "add")
 	}
+
+	// TODO This is absolutely not a proper session ID but with limited time and inexperience
+	// with scala and scalatra, this will have to do to identify clients.
+	def generateSessionId() : String = {
+		// Simply hand the current number of users as key and increment afterward
+		// We keep a table of our consumer bookmarks
+		val sessionId:String = this.sessions.toString
+		sessionId
+	}
+
+	def read(topic:String, sessionId:String) : Option[String] = {
+		// Check if the topic exists
+		if (!topics.contains(topic)) {
+			return Option(null)
+		}
+		// Check if the consumer has an existing session id
+		if (!consumers.contains(sessionId)) {
+			// Re-use if necessary
+			consumers += (sessionId -> new Consumer(sessionId))
+		}
+		Option(topics(topic).read(consumers(sessionId)))
+	}
 }
+
+

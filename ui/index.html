@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>HyperQueue Reader</title>
+</head>
+
+<script>
+function loadTopics() {
+	addEventToList("available", ["topic1", "topic2", "topic3", "topics4"]);
+}
+
+function loadEvents() {
+	addEventToList("events", ["event1"]);
+}
+
+function addEventToList(id, values) {
+	var anchor = document.getElementById(id);
+	var list = document.createElement('ul');
+	for (var i = 0; i < values.length; i++) {
+		var item = document.createElement('li');
+		item.appendChild(document.createTextNode(values[i]));
+		list.appendChild(item);
+	}
+	anchor.appendChild(list)
+}
+
+</script>
+<body>
+<div id="wrap">
+	<h1>HyperQueue</h1>
+	<h2>Available topics</h2>
+	<button type="button" onclick="loadTopics()">List</button>
+	<div id="available">
+	</div>
+	
+	<h2>Reader</h2>
+	<button type="button" onclick="loadEvents()">Read</button>
+	<div id="events">
+	</div>
+</div>
+
+</body>
+</html>
+

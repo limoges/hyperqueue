@@ -12,8 +12,11 @@ curl --data "event='{userId: 222222}'" -w "\n---\n" -s -D - localhost:8080/orang
 echo "GET on root"
 curl -w "\n---\n" -s -D - localhost:8080/
 
+echo "GET a session ID"
+curl -w "\n---\n" -s -D - localhost:8080/consume
+
 echo "GET on missing topic"
-curl -w "\n---\n" -s -D - localhost:8080/missing
+curl -w "\n---\n" -s -D - localhost:8080/missing?sessionId=0
 
 echo "GET on existing topic"
-curl -w "\n---\n" -s -D - localhost:8080/oranges
+curl -w "\n---\n" -s -D - localhost:8080/oranges?sessionId=0

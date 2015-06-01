@@ -23,16 +23,18 @@ class BrokerServlet extends ScalatraServlet with ScalateSupport with JacksonJson
 	get("/") {
 		broker.view()
 	}
-	
+
+	// Consumer must retrieve their sessionId before starting to consume topics
 	post("/:topic") {
 		broker.write(params("topic"), params("event"))
 	}
 
 	get("/:topic") {
-		// broker.read(params("topic"), params("key")) match {
-		//	case Some(t)	=> Ok(t);
-		//	case None	=> NotFound(params("topic") + " not found");
-		//}
+		broker.read(params("topic"), params("sessionId")) match {
+			case Some(e)	=> Ok(e);
+			case None	=> NotFound(params("topic") + " not found");
+				
+		}
 	}
 }
 
